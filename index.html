@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>42 Log</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;background:#edf2f7;color:#1a2744;font-size:14px}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit}
+.topnav{background:#1a2744;padding:0 20px;display:flex;align-items:center;height:52px;position:sticky;top:0;z-index:100}
+.brand{display:flex;align-items:center;gap:9px;margin-right:24px}
+.brand-logo{width:28px;height:28px;background:#2563a8;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.brand-name{font-size:15px;font-weight:700;color:#fff}
+.ntab{padding:0 15px;height:52px;display:flex;align-items:center;font-size:12px;color:rgba(255,255,255,.5);cursor:pointer;border-bottom:2.5px solid transparent}
+.ntab:hover{color:rgba(255,255,255,.8)}
+.ntab.on{color:#fff;border-bottom-color:#4a90d9;font-weight:600}
+.wrap{display:flex;min-height:calc(100vh - 52px)}
+.sidebar{width:210px;background:#fff;border-right:1px solid #e2e8f0;padding:12px 10px;flex-shrink:0}
+.content{flex:1;padding:20px;overflow-y:auto}
+.slsec{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#a0aec0;padding:0 8px;margin:12px 0 4px}
+.slrow{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:7px;font-size:12px;color:#4a5568;cursor:pointer}
+.slrow:hover{background:#eef4fb}
+.slrow.on{background:#eef4fb;color:#1e3a6e;font-weight:600}
+.sldot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.slnum{margin-left:auto;font-size:10px;padding:1px 6px;border-radius:10px;background:#dce8f5;color:#1e3a6e;font-weight:600}
+.qs{background:#f6f9fd;border-radius:8px;padding:10px;margin-bottom:8px}
+.qsrow{display:flex;justify-content:space-between;padding:3px 0}
+.qsl{font-size:10px;color:#a0aec0}
+.qsv{font-size:13px;font-weight:700;color:#1e3a6e}
+.pane{display:none}
+.pane.on{display:block}
+.phd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.ptitle{font-size:16px;font-weight:700;color:#1a2744}
+.bblue{background:#2563a8;color:#fff;border:none;padding:8px 16px;border-radius:7px;font-size:12px;font-weight:600}
+.bblue:hover{opacity:.88}
+.bgreen{background:#2d6a4f;color:#fff;border:none;padding:8px 16px;border-radius:7px;font-size:12px;font-weight:600}
+.bgreen:hover{opacity:.88}
+.bsm{padding:5px 11px;font-size:11px;border:1px solid #cbd5e0;background:#fff;border-radius:6px;color:#718096}
+.bsm:hover{background:#eef4fb;border-color:#7ab8f0;color:#1e3a6e}
+.bedit{background:none;border:1px solid #cbd5e0;padding:4px 8px;border-radius:5px;font-size:11px;color:#718096}
+.bedit:hover{background:#eef4fb}
+.bdel{background:none;border:1px solid #fca5a5;padding:4px 8px;border-radius:5px;font-size:11px;color:#8b1a1a}
+.bdel:hover{background:#fde8e8}
+.calhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.calm{font-size:17px;font-weight:700;color:#1a2744}
+.vtog{display:flex;background:#e2e8f0;border-radius:8px;padding:2px;gap:1px}
+.vbtn{padding:5px 11px;font-size:11px;border:none;background:transparent;border-radius:6px;color:#718096;font-weight:500}
+.vbtn.on{background:#fff;color:#1e3a6e;font-weight:700}
+.leg{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.legi{display:flex;align-items:center;gap:5px;font-size:11px;color:#4a5568}
+.legd{width:10px;height:10px;border-radius:3px;border:1px solid rgba(0,0,0,.1)}
+table.cal{width:100%;border-collapse:collapse;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;background:#fff;table-layout:fixed}
+table.cal th{background:#f8fafc;padding:14px 0;text-align:center;font-size:12px;font-weight:600;color:#718096;border-bottom:1px solid #e2e8f0;border-right:1px solid #e2e8f0}
+table.cal th:last-child{border-right:none}
+table.cal th.sun{color:#e05252}
+table.cal th.sat{color:#2563a8}
+table.cal td{width:14.28%;height:110px;border-right:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;padding:8px 8px 6px;vertical-align:top;background:#ffffff;cursor:pointer;transition:background .1s}
+table.cal td:hover{background:#f0f6ff}
+table.cal td.oth{background:#f8fafc;cursor:default}
+table.cal td.oth:hover{background:#f8fafc}
+table.cal td:last-child{border-right:none}
+table.cal tr:last-child td{border-bottom:none}
+.dn{font-size:13px;font-weight:600;color:#1a2744;margin-bottom:5px;line-height:1}
+.dn.sun{color:#e05252}
+.dn.sat{color:#2563a8}
+.dn.oth{color:#c5d0de}
+.dn.tod{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:#2563a8;color:#fff;border-radius:50%;font-size:12px}
+.ev{font-size:10px;padding:3px 7px;border-radius:4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-bottom:3px;display:block;font-weight:500}
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
+.chip{padding:5px 12px;font-size:11px;border:1px solid #cbd5e0;border-radius:20px;background:#fff;color:#718096;cursor:pointer;font-weight:500}
+.chip:hover{border-color:#7ab8f0;color:#1e3a6e}
+.chip.on{background:#eef4fb;color:#1e3a6e;border-color:#4a90d9;font-weight:700}
+.actlist,.explist{display:flex;flex-direction:column;gap:9px}
+.ac{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px}
+.ac:hover{border-color:#b8d4ed}
+.achd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.actag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;margin-bottom:4px;display:inline-block}
+.actitle{font-size:13px;font-weight:700;color:#1a2744}
+.acr{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.st{font-size:10px;padding:3px 9px;border-radius:12px;font-weight:700;white-space:nowrap}
+.ss{background:#d8f3dc;color:#2d6a4f}
+.sw{background:#fff3cd;color:#7c4f00}
+.sf{background:#fde8e8;color:#8b1a1a}
+.sp{background:#dbeafe;color:#1a3a6e}
+.acmeta{display:flex;gap:10px;flex-wrap:wrap}
+.acmi{font-size:11px;color:#718096}
+.accost{font-size:11px;font-weight:700;color:#2563a8}
+.acmemo{font-size:11px;color:#a0aec0;margin-top:7px;padding-top:7px;border-top:1px solid #e2e8f0}
+.exsum{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.esc{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px}
+.escl{font-size:10px;color:#718096}
+.escv{font-size:17px;font-weight:700;color:#1a2744;margin-top:3px}
+.escbar{height:3px;background:#e2e8f0;border-radius:2px;margin:7px 0 3px}
+.escfill{height:3px;border-radius:2px}
+.escb{font-size:10px;color:#a0aec0}
+.ei{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:11px 14px;display:flex;align-items:center;justify-content:space-between}
+.ei:hover{border-color:#b8d4ed}
+.eil{display:flex;align-items:center;gap:9px}
+.eiico{width:32px;height:32px;border-radius:8px;background:#f6f9fd;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.eit{font-size:12px;font-weight:600;color:#1a2744}
+.eis{font-size:10px;color:#a0aec0}
+.eiamt{font-size:13px;font-weight:700;color:#1a2744;text-align:right}
+.eii{color:#2d6a4f}
+.lnk{font-size:9px;padding:2px 5px;border-radius:3px;background:#eef4fb;color:#2563a8;font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stcard{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px}
+.stl{font-size:11px;color:#718096;margin-bottom:5px}
+.stv{font-size:22px;font-weight:700;color:#1a2744}
+.sts{font-size:10px;color:#a0aec0;margin-top:2px}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.scard{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px}
+.sct{font-size:12px;font-weight:700;color:#1a2744;margin-bottom:10px}
+.upi{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid #e2e8f0}
+.upi:last-child{border-bottom:none}
+.upd{font-size:10px;color:#a0aec0;width:44px;flex-shrink:0}
+.upt{font-size:12px;color:#1a2744}
+.upg{font-size:10px;color:#a0aec0}
+.setcard{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:14px}
+.settitle{font-size:13px;font-weight:700;color:#1a2744;margin-bottom:12px}
+.csgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.csl{font-size:11px;font-weight:600;color:#4a5568;margin-bottom:7px}
+.css{font-size:10px;color:#a0aec0;margin-bottom:4px}
+.csr{display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.cscol{width:28px;height:28px;border-radius:6px;border:1px solid #cbd5e0;padding:0}
+.cshex{font-size:11px;font-family:monospace;background:#f6f9fd;border:1px solid #cbd5e0;border-radius:5px;padding:4px 6px;width:82px;color:#1a2744}
+.csprev{display:flex;gap:6px;flex-wrap:wrap;padding-top:10px;border-top:1px solid #e2e8f0;margin-top:8px}
+.cschip{font-size:11px;padding:4px 10px;border-radius:5px;font-weight:600}
+.dbtn{display:flex;gap:8px;flex-wrap:wrap}
+.dinfo{margin-top:10px;padding:10px;background:#f6f9fd;border-radius:7px;font-size:11px;color:#718096;line-height:1.7}
+.mov{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(26,39,68,.5);z-index:9000;align-items:center;justify-content:center}
+.mov.on{display:flex}
+.mbox{background:#fff;border-radius:14px;width:90%;max-width:500px;padding:20px;max-height:85vh;overflow-y:auto}
+@media(max-width:700px){.sidebar{display:none}.stats{grid-template-columns:1fr 1fr}.exsum{grid-template-columns:1fr}.sgrid{grid-template-columns:1fr}.csgrid{grid-template-columns:1fr 1fr}.content{padding:12px}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <div class="brand"><div class="brand-logo">42</div><span class="brand-name">42 Log</span></div>
+  <div class="ntab on" onclick="gT('cal')">캘린더</div>
+  <div class="ntab" onclick="gT('act')">팬 활동</div>
+  <div class="ntab" onclick="gT('exp')">가계부</div>
+  <div class="ntab" onclick="gT('dash')">대시보드</div>
+  <div class="ntab" onclick="gT('set')">설정</div>
+</nav>
+<div class="wrap">
+<aside class="sidebar">
+  <div class="qs">
+    <div class="qsrow"><span class="qsl">이번달 참여</span><span class="qsv" id="qA">—</span></div>
+    <div class="qsrow"><span class="qsl">이번달 지출/수입</span><span class="qsv" id="qE" style="font-size:11px">—</span></div>
+    <div class="qsrow"><span class="qsl">총 팬활동</span><span class="qsv" id="qT">—</span></div>
+  </div>
+  <div class="slsec">일정 필터</div>
+  <div class="slrow on" onclick="sSF('all',this)"><div class="sldot" style="background:#a0aec0"></div>전체 보기</div>
+  <div class="slrow" onclick="sSF('tws',this)"><div class="sldot" id="dTws"></div>투어스 공식</div>
+  <div class="slrow" onclick="sSF('fan',this)"><div class="sldot" id="dFan"></div>팬 참여 활동</div>
+  <div class="slrow" onclick="sSF('apply',this)"><div class="sldot" id="dApl"></div>응모 일정</div>
+  <div class="slsec">활동 현황</div>
+  <div class="slrow" onclick="gT('act')"><div class="sldot" style="background:#2d6a4f"></div>참여 성공<span class="slnum" id="sS">0</span></div>
+  <div class="slrow" onclick="gT('act')"><div class="sldot" style="background:#7c4f00"></div>대기 중<span class="slnum" id="sW">0</span></div>
+  <div class="slrow" onclick="gT('act')"><div class="sldot" style="background:#1a3a6e"></div>예정<span class="slnum" id="sP">0</span></div>
+</aside>
+<main class="content">
+  <div class="pane on" id="p-cal">
+    <div class="calhd">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="calm" id="calM"></span>
+        <button class="bsm" onclick="cM(-1)">&#8249;</button>
+        <button class="bsm" onclick="cM(0)">오늘</button>
+        <button class="bsm" onclick="cM(1)">&#8250;</button>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="bblue" onclick="oM('ev','')">+ 일정 추가</button>
+        <div class="vtog">
+          <button class="vbtn on" id="v0" onclick="sV('all')">통합</button>
+          <button class="vbtn" id="v1" onclick="sV('my')">내 일정</button>
+          <button class="vbtn" id="v2" onclick="sV('tws')">투어스</button>
+        </div>
+      </div>
+    </div>
+    <div class="leg">
+      <div class="legi"><div class="legd" id="lTws" style="background:#dbeafe;border-color:#1e3a6e"></div>투어스 공식</div>
+      <div class="legi"><div class="legd" id="lFan" style="background:#e0f2fe;border-color:#0c4a6e"></div>팬 참여 활동</div>
+      <div class="legi"><div class="legd" id="lApl" style="background:#e2e8f0;border-color:#4a5568"></div>응모 일정</div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="cal">
+        <thead><tr><th class="sun">일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th class="sat">토</th></tr></thead>
+        <tbody id="calB"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="pane" id="p-act">
+    <div class="phd"><div class="ptitle">팬 활동 기록</div><button class="bblue" onclick="oM('act',null)">+ 활동 추가</button></div>
+    <div class="chips" id="acChips">
+      <div class="chip on" onclick="sCh(this,'all','a')">전체</div>
+      <div class="chip" onclick="sCh(this,'fansign','a')">팬사인회</div>
+      <div class="chip" onclick="sCh(this,'prerecord','a')">사전녹화</div>
+      <div class="chip" onclick="sCh(this,'live','a')">생방송</div>
+      <div class="chip" onclick="sCh(this,'showcase','a')">쇼케이스</div>
+      <div class="chip" onclick="sCh(this,'event','a')">오프라인 이벤트</div>
+    </div>
+    <div class="actlist" id="aList"></div>
+  </div>
+  <div class="pane" id="p-exp">
+    <div class="phd"><div class="ptitle">가계부</div><div style="display:flex;gap:6px"><button class="bgreen" onclick="oM('inc',null)">+ 수입 추가</button><button class="bblue" onclick="oM('exp',null)">+ 지출 추가</button></div></div>
+    <div class="exsum" id="eSum"></div>
+    <div class="chips" id="exChips">
+      <div class="chip on" onclick="sCh(this,'all','e')">전체</div>
+      <div class="chip" onclick="sCh(this,'income','e')" style="color:#2d6a4f;border-color:#9fd3b0">수입</div>
+      <div class="chip" onclick="sCh(this,'album','e')">앨범</div>
+      <div class="chip" onclick="sCh(this,'apply','e')">응모비</div>
+      <div class="chip" onclick="sCh(this,'transport','e')">교통</div>
+      <div class="chip" onclick="sCh(this,'lodging','e')">숙박</div>
+      <div class="chip" onclick="sCh(this,'goods','e')">굿즈</div>
+      <div class="chip" onclick="sCh(this,'food','e')">식비</div>
+    </div>
+    <div class="explist" id="eList"></div>
+  </div>
+  <div class="pane" id="p-dash">
+    <div class="phd"><div class="ptitle">대시보드</div></div>
+    <div class="stats" id="stRow"></div>
+    <div class="sgrid"><div class="scard"><div class="sct">다가오는 일정</div><div id="upL"></div></div><div class="scard"><div class="sct">활동 현황</div><div id="acSt"></div></div></div>
+    <div class="sgrid"><div class="scard"><div class="sct">카테고리별 지출</div><div id="exSt"></div></div><div class="scard"><div class="sct">최근 히스토리</div><div id="hiL"></div></div></div>
+  </div>
+  <div class="pane" id="p-set">
+    <div class="phd"><div class="ptitle">설정</div></div>
+    <div class="setcard">
+      <div class="settitle">활동 필터 관리 <span style="font-size:11px;color:#718096;font-weight:400">(예: [TWS 3집], [영재 직캠] 형식으로 표시됩니다)</span></div>
+      <div id="filterList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px"></div>
+      <button class="bblue" onclick="oM('filter',null)">+ 필터 추가</button>
+    </div>
+    <div class="setcard"><div class="settitle">일정 색상 설정</div><div class="csgrid" id="csG"></div><div class="csprev" id="csP"></div><div style="margin-top:12px"><button class="bblue" onclick="saveCols()">색상 저장</button></div></div>
+    <div class="setcard"><div class="settitle">데이터 관리</div>
+      <div class="dbtn"><button class="bsm" onclick="exD()">📤 내보내기</button><button class="bsm" onclick="document.getElementById('iF').click()">📥 가져오기</button><input type="file" id="iF" accept=".json" style="display:none" onchange="imD(event)"><button class="bsm" style="border-color:#fca5a5;color:#8b1a1a" onclick="clAll()">🗑 초기화</button></div>
+      <div class="dinfo">✅ 데이터는 브라우저에 자동 저장됩니다.<br>📱 다른 기기 사용 시 내보내기 후 가져오기 하세요.</div>
+    </div>
+  </div>
+</main>
+</div>
+<div class="mov" id="mov" onclick="cMOut(event)"><div class="mbox" id="mbox"></div></div>
+<script>
+const T=new Date();
+const CA={fansign:'팬사인회',prerecord:'사전녹화',live:'생방송',showcase:'쇼케이스',event:'오프라인 이벤트'};
+const EX={album:'앨범',apply:'응모비',transport:'교통비',lodging:'숙박비',goods:'굿즈',food:'식비'};
+const EI={album:'💿',apply:'📋',transport:'🚇',lodging:'🏨',goods:'🛍️',food:'🍱'};
+const EC=['#2563a8','#4a90d9','#1e3a6e','#7ab8f0','#718096','#a0aec0'];
+const IC={sell:'굿즈 판매',gift:'선물·지원',other:'기타 수입'};
+const II={sell:'💰',gift:'🎁',other:'📥'};
+const SL={success:'참여 성공',waiting:'대기 중',fail:'탈락',planned:'예정'};
+const SC={success:'ss',waiting:'sw',fail:'sf',planned:'sp'};
+const DC={tws:{bg:'#dbeafe',tx:'#1e3a6e',lb:'투어스 공식'},fan:{bg:'#e0f2fe',tx:'#0c4a6e',lb:'팬 참여 활동'},apply:{bg:'#e2e8f0',tx:'#4a5568',lb:'응모 일정'}};
+const DA=[{id:1,type:'fansign',title:'봄 팬사인회',date:'2025-04-05',dateEnd:'',place:'홍대',status:'success',memo:'신유 만남!',tags:'신유',linkedExp:[1,2,3]},{id:2,type:'prerecord',title:'뮤직뱅크 사전녹화',date:'2025-04-12',dateEnd:'',place:'KBS',status:'success',memo:'',tags:'',linkedExp:[4]},{id:3,type:'showcase',title:'컴백 쇼케이스',date:'2025-04-18',dateEnd:'2025-04-19',place:'올림픽공원',status:'waiting',memo:'응모 5장',tags:'컴백',linkedExp:[5,6]},{id:4,type:'live',title:'인기가요 방청',date:'2025-04-26',dateEnd:'',place:'SBS',status:'planned',memo:'',tags:'',linkedExp:[]}];
+const DE=[{id:1,cat:'album',title:'앨범 5장',date:'2025-04-01',amount:75000,linkedAct:1},{id:2,cat:'apply',title:'응모비',date:'2025-04-01',amount:0,linkedAct:1},{id:3,cat:'transport',title:'교통비',date:'2025-04-05',amount:12000,linkedAct:1},{id:4,cat:'transport',title:'KBS 교통',date:'2025-04-12',amount:6000,linkedAct:2},{id:5,cat:'album',title:'컴백 앨범',date:'2025-04-15',amount:55000,linkedAct:3},{id:6,cat:'transport',title:'쇼케이스 교통',date:'2025-04-18',amount:15000,linkedAct:3}];
+const DI=[{id:1,cat:'sell',title:'포카 판매',date:'2025-04-03',amount:15000,memo:''},{id:2,cat:'sell',title:'앨범 여분',date:'2025-03-20',amount:30000,memo:''}];
+const DT=[{id:'t1',date:'2025-04-14',dateEnd:'',title:'정규 1집 발매'},{id:'t2',date:'2025-04-18',dateEnd:'',title:'컴백 쇼케이스'},{id:'t3',date:'2025-04-19',dateEnd:'',title:'뮤직뱅크'},{id:'t4',date:'2025-04-20',dateEnd:'',title:'인기가요'},{id:'t5',date:'2025-05-03',dateEnd:'',title:'팬미팅'}];
+const DP=[{id:'p1',date:'2025-04-10',dateEnd:'2025-04-12',title:'응모 기간'},{id:'p2',date:'2025-04-22',dateEnd:'',title:'결과 발표'}];
+let S={},CY=T.getFullYear(),CM=T.getMonth(),CV='all',SF='all',AF='all',EF='all';
+function ld(){try{const r=localStorage.getItem('42lg3');if(r)S=JSON.parse(r);else df();}catch(e){df();}
+if(!S.c)S.c=JSON.parse(JSON.stringify(DC));
+if(!S.a)S.a=JSON.parse(JSON.stringify(DA));
+if(!S.e)S.e=JSON.parse(JSON.stringify(DE));
+if(!S.i)S.i=JSON.parse(JSON.stringify(DI));
+if(!S.t)S.t=JSON.parse(JSON.stringify(DT));
+if(!S.p)S.p=JSON.parse(JSON.stringify(DP));
+if(!S.filters)S.filters=[];}
+function df(){S={c:JSON.parse(JSON.stringify(DC)),a:JSON.parse(JSON.stringify(DA)),e:JSON.parse(JSON.stringify(DE)),i:JSON.parse(JSON.stringify(DI)),t:JSON.parse(JSON.stringify(DT)),p:JSON.parse(JSON.stringify(DP)),filters:[]};}
+function sv(){try{localStorage.setItem('42lg3',JSON.stringify(S));}catch(e){}}
+function fm(n){return Math.round(n).toLocaleString()+'원';}
+function ni(ar){return ar.length?Math.max(...ar.map(x=>x.id||0))+1:1;}
+function ui(){return 'u'+Date.now();}
+function es(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function tds(y,m,d){return y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');}
+function toast(msg){let t=document.getElementById('_t');if(!t){t=document.createElement('div');t.id='_t';t.style.cssText='position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(70px);background:#1a2744;color:#fff;padding:10px 20px;border-radius:9px;font-size:12px;font-weight:600;z-index:99999;transition:transform .25s;pointer-events:none';document.body.appendChild(t);}t.textContent=msg;t.style.transform='translateX(-50%) translateY(0)';setTimeout(()=>t.style.transform='translateX(-50%) translateY(70px)',2000);}
+
+function gT(id){
+  document.querySelectorAll('.pane').forEach(p=>p.style.display='none');
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('on'));
+  const p=document.getElementById('p-'+id);if(p)p.style.display='block';
+  const tabs=['cal','act','exp','dash','set'];
+  const i=tabs.indexOf(id);if(i>=0)document.querySelectorAll('.ntab')[i].classList.add('on');
+  if(id==='dash')rDash();if(id==='set')rSet();if(id==='act')rActs();if(id==='exp')rExps();if(id==='cal')rCal();
+}
+function sSF(f,el){
+  SF=f;
+  document.querySelectorAll('.slrow').forEach(r=>r.classList.remove('on'));
+  el.classList.add('on');
+  if(f==='tws'){CV='tws';}
+  else if(f==='fan'){CV='fan';}
+  else if(f==='apply'){CV='apply';}
+  else{CV='all';}
+  ['v0','v1','v2'].forEach(id=>document.getElementById(id).classList.remove('on'));
+  if(CV==='all')document.getElementById('v0').classList.add('on');
+  else if(CV==='tws')document.getElementById('v2').classList.add('on');
+  else document.getElementById('v1').classList.add('on');
+  rCal();
+}
+function sV(v){CV=v;['v0','v1','v2'].forEach(id=>document.getElementById(id).classList.remove('on'));document.getElementById(v==='all'?'v0':v==='my'?'v1':'v2').classList.add('on');rCal();}
+function cM(d){if(d===0){CY=T.getFullYear();CM=T.getMonth();}else{CM+=d;if(CM>11){CM=0;CY++;}else if(CM<0){CM=11;CY--;}}rCal();}
+function sCh(el,v,tp){el.closest('.chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');if(tp==='a'){AF=v;rActs();}else{EF=v;rExps();}}
+
+function apC(){
+  const c=S.c;
+  const sd=(id,v)=>{const e=document.getElementById(id);if(e)e.style.background=v;};
+  sd('dTws',c.tws.tx);sd('dFan',c.fan.tx);sd('dApl',c.apply.tx);
+  const sl=(id,bg,tx)=>{const e=document.getElementById(id);if(e){e.style.background=bg;e.style.borderColor=tx;}};
+  sl('lTws',c.tws.bg,c.tws.tx);sl('lFan',c.fan.bg,c.fan.tx);sl('lApl',c.apply.bg,c.apply.tx);
+}
+
+function rCal(){
+  apC();
+  const c=S.c;
+  const em=document.getElementById('calM');if(em)em.textContent=CY+'년 '+(CM+1)+'월';
+  const first=new Date(CY,CM,1).getDay();
+  const last=new Date(CY,CM+1,0).getDate();
+  const tod=tds(T.getFullYear(),T.getMonth(),T.getDate());
+  const ev={};
+  const pu=(d,e)=>{if(!ev[d])ev[d]=[];ev[d].push(e);};
+  const ar=(d,de,e)=>{pu(d,e);if(de&&de>d){let c2=new Date(d);c2.setDate(c2.getDate()+1);const end=new Date(de);while(c2<=end){pu(tds(c2.getFullYear(),c2.getMonth(),c2.getDate()),e);c2.setDate(c2.getDate()+1);}}};
+  const getFL=(filterId)=>{if(!filterId)return'';const f=(S.filters||[]).find(x=>x.id===filterId);return f?`[${f.name}] `:'';};
+  if(CV==='all'||CV==='tws')S.t.forEach(e=>ar(e.date,e.dateEnd||'',{title:getFL(e.filterId)+e.title,bg:c.tws.bg,tx:c.tws.tx}));
+  if(CV==='all'||CV==='fan')S.a.forEach(a=>ar(a.date,a.dateEnd||'',{title:getFL(a.filterId)+(CA[a.type]||a.type)+' - '+a.title,bg:c.fan.bg,tx:c.fan.tx}));
+  if(CV==='all'||CV==='apply')S.p.forEach(e=>ar(e.date,e.dateEnd||'',{title:getFL(e.filterId)+e.title+(e.label?` (${e.label})`:''),bg:c.apply.bg,tx:c.apply.tx}));
+  if(CV==='my'){S.a.forEach(a=>ar(a.date,a.dateEnd||'',{title:getFL(a.filterId)+(CA[a.type]||a.type)+' - '+a.title,bg:c.fan.bg,tx:c.fan.tx}));S.p.forEach(e=>ar(e.date,e.dateEnd||'',{title:getFL(e.filterId)+e.title+(e.label?` (${e.label})`:''),bg:c.apply.bg,tx:c.apply.tx}));}
+  const tb=document.getElementById('calB');if(!tb)return;
+  let h='',day=1-first;
+  for(let r=0;r<6;r++){
+    if(day>last)break;
+    h+='<tr>';
+    for(let col=0;col<7;col++,day++){
+      if(day<1||day>last){
+        const d2=new Date(CY,CM,day);
+        h+=`<td class="oth"><div class="dn oth">${d2.getDate()}</div></td>`;
+      } else {
+        const ds=tds(CY,CM,day);
+        const isT=ds===tod;
+        const dow=new Date(CY,CM,day).getDay();
+        const dc='dn'+(isT?' tod':dow===0?' sun':dow===6?' sat':'');
+        const evs=ev[ds]||[];
+        const eh=evs.slice(0,3).map(e=>`<span class="ev" style="background:${e.bg};color:${e.tx}">${e.title}</span>`).join('');
+        const more=evs.length>3?`<span style="font-size:9px;color:#a0aec0">+${evs.length-3}개</span>`:'';
+        h+=`<td onclick="dC('${ds}')"><div class="${dc}">${day}</div>${eh}${more}</td>`;
+      }
+    }
+    h+='</tr>';
+  }
+  tb.innerHTML=h;
+}
+
+function dC(ds){
+  const c=S.c;
+  const d=new Date(ds);const lb=(d.getMonth()+1)+'월 '+d.getDate()+'일';
+  let evs=[];
+  const getFL2=(filterId)=>{if(!filterId)return'';const f=(S.filters||[]).find(x=>x.id===filterId);return f?`[${f.name}] `:'';};
+  if(CV==='all'||CV==='tws')S.t.forEach(e=>{if(e.date<=ds&&(e.dateEnd?e.dateEnd>=ds:e.date===ds))evs.push({title:getFL2(e.filterId)+e.title,bg:c.tws.bg,tx:c.tws.tx,type:'tws',id:e.id});});
+  if(CV==='all'||CV==='fan')S.a.forEach(a=>{if(a.date<=ds&&(a.dateEnd?a.dateEnd>=ds:a.date===ds))evs.push({title:getFL2(a.filterId)+(CA[a.type]||a.type)+' - '+a.title,bg:c.fan.bg,tx:c.fan.tx,type:'act',id:a.id});});
+  if(CV==='all'||CV==='apply')S.p.forEach(e=>{if(e.date<=ds&&(e.dateEnd?e.dateEnd>=ds:e.date===ds))evs.push({title:getFL2(e.filterId)+e.title+(e.label?` (${e.label})`:''),bg:c.apply.bg,tx:c.apply.tx,type:'apl',id:e.id});});
+  if(CV==='my'){S.a.forEach(a=>{if(a.date<=ds&&(a.dateEnd?a.dateEnd>=ds:a.date===ds))evs.push({title:getFL2(a.filterId)+(CA[a.type]||a.type)+' - '+a.title,bg:c.fan.bg,tx:c.fan.tx,type:'act',id:a.id});});S.p.forEach(e=>{if(e.date<=ds&&(e.dateEnd?e.dateEnd>=ds:e.date===ds))evs.push({title:getFL2(e.filterId)+e.title,bg:c.apply.bg,tx:c.apply.tx,type:'apl',id:e.id});});}
+  const BOK='background:#2563a8;color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;';
+  const BCN='background:#f6f9fd;color:#4a5568;border:1px solid #cbd5e0;padding:10px;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;';
+  let h=`<div style="font-size:15px;font-weight:700;color:#1a2744;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">${lb} 일정 <button style="background:none;border:none;font-size:22px;color:#a0aec0;cursor:pointer" onclick="cM2()">×</button></div>`;
+  if(evs.length){
+    evs.forEach(e=>{
+      let btns='';
+      if(e.type==='tws') btns=`<button style="background:none;border:1px solid #cbd5e0;padding:3px 8px;border-radius:5px;font-size:11px;color:#718096;cursor:pointer;margin-left:6px" onclick="cM2();oMTws('${e.id}')">✎</button><button style="background:none;border:1px solid #fca5a5;padding:3px 8px;border-radius:5px;font-size:11px;color:#8b1a1a;cursor:pointer;margin-left:3px" onclick="dTws('${e.id}')">✕</button>`;
+      else if(e.type==='act') btns=`<button style="background:none;border:1px solid #cbd5e0;padding:3px 8px;border-radius:5px;font-size:11px;color:#718096;cursor:pointer;margin-left:6px" onclick="cM2();oM('act',${e.id})">✎</button><button style="background:none;border:1px solid #fca5a5;padding:3px 8px;border-radius:5px;font-size:11px;color:#8b1a1a;cursor:pointer;margin-left:3px" onclick="dA(${e.id})">✕</button>`;
+      else if(e.type==='apl') btns=`<button style="background:none;border:1px solid #cbd5e0;padding:3px 8px;border-radius:5px;font-size:11px;color:#718096;cursor:pointer;margin-left:6px" onclick="cM2();oMApl('${e.id}')">✎</button><button style="background:none;border:1px solid #fca5a5;padding:3px 8px;border-radius:5px;font-size:11px;color:#8b1a1a;cursor:pointer;margin-left:3px" onclick="dApl('${e.id}')">✕</button>`;
+      h+=`<div style="padding:8px 0;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;padding:3px 8px;border-radius:4px;background:${e.bg};color:${e.tx}">${e.title}</span><div>${btns}</div></div>`;
+    });
+  } else {
+    h+=`<div style="font-size:12px;color:#a0aec0;padding:10px 0">일정이 없습니다.</div>`;
+  }
+  h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px"><button style="${BCN}" onclick="cM2()">닫기</button><button style="${BOK}" onclick="cM2();oM('ev','${ds}')">+ 일정 추가</button></div>`;
+  sM(h);
+}
+
+function rActs(){
+  const data=AF==='all'?S.a:S.a.filter(a=>a.type===AF);
+  const el=document.getElementById('aList');if(!el)return;
+  if(!data.length){el.innerHTML=`<div style="text-align:center;padding:40px;color:#a0aec0;font-size:13px">활동 기록이 없습니다.</div>`;return;}
+  el.innerHTML=data.map(a=>{
+    const fc=S.c.fan;
+    const cost=a.linkedExp.reduce((s,id)=>{const e=S.e.find(x=>x.id===id);return s+(e?e.amount:0);},0);
+    const filterTag = a.filterId ? (()=>{const f=S.filters.find(x=>x.id===a.filterId);return f?`<span style="font-size:10px;font-weight:700;color:#2563a8;background:#eef4fb;padding:2px 7px;border-radius:4px;margin-right:6px">[${f.name}]</span>`:''})() : '';
+    return `<div class="ac"><div class="achd"><div><div class="actag" style="background:${fc.bg};color:${fc.tx}">${CA[a.type]||a.type}</div><div class="actitle">${filterTag}${a.title}</div></div><div class="acr"><div class="st ${SC[a.status]||'sp'}">${SL[a.status]||a.status}</div><button class="bedit" onclick="oM('act',${a.id})">✎</button><button class="bdel" onclick="dA(${a.id})">✕</button></div></div>
+    <div class="acmeta"><span class="acmi">📅 ${a.date}${a.dateEnd?' ~ '+a.dateEnd:''}</span><span class="acmi">📍 ${a.place||'미정'}</span>${cost>0?`<span class="accost">💸 ${fm(cost)}</span>`:''}${a.tags?`<span class="acmi" style="color:#2563a8">${a.tags.split(',').map(t=>'#'+t.trim()).join(' ')}</span>`:''}</div>
+    ${a.memo?`<div class="acmemo">${a.memo}</div>`:''}</div>`;
+  }).join('');
+}
+
+function rExps(){
+  const te=S.e.reduce((s,e)=>s+e.amount,0);const ti=S.i.reduce((s,e)=>s+e.amount,0);const net=ti-te;
+  document.getElementById('eSum').innerHTML=`
+    <div class="esc" style="border-color:#9fd3b0"><div class="escl" style="color:#2d6a4f">총 수입</div><div class="escv" style="color:#2d6a4f">+${fm(ti)}</div><div class="escbar"><div class="escfill" style="width:100%;background:#2d6a4f"></div></div><div class="escb">${S.i.length}건</div></div>
+    <div class="esc"><div class="escl">총 지출</div><div class="escv">-${fm(te)}</div><div class="escbar"><div class="escfill" style="width:100%;background:#2563a8"></div></div><div class="escb">${S.e.length}건</div></div>
+    <div class="esc" style="border-color:${net>=0?'#9fd3b0':'#fca5a5'}"><div class="escl">순 잔액</div><div class="escv" style="color:${net>=0?'#2d6a4f':'#8b1a1a'}">${net>=0?'+':''}${fm(net)}</div><div class="escbar"><div class="escfill" style="width:100%;background:${net>=0?'#2d6a4f':'#e24b4a'}"></div></div><div class="escb">${net>=0?'흑자':'적자'}</div></div>`;
+  let items=[];
+  if(EF==='all'||EF==='income')S.i.forEach(e=>items.push({...e,_t:'i'}));
+  if(EF==='all'||(EF!=='income'&&EF!==''))(EF==='all'?S.e:S.e.filter(e=>e.cat===EF)).forEach(e=>items.push({...e,_t:'e'}));
+  items.sort((a,b)=>b.date.localeCompare(a.date));
+  document.getElementById('eList').innerHTML=items.length?items.map(e=>{
+    const iI=e._t==='i';const ico=iI?(II[e.cat]||'💰'):(EI[e.cat]||'💰');const cn=iI?(IC[e.cat]||e.cat):(EX[e.cat]||e.cat);
+    const lk=!iI?S.a.find(a=>a.id===e.linkedAct):null;
+    return `<div class="ei" style="border-left:3px solid ${iI?'#2d6a4f':'#2563a8'}"><div class="eil"><div class="eiico" style="${iI?'background:#d8f3dc':''}">${ico}</div><div><div class="eit">${e.title} <span style="font-size:10px;color:${iI?'#2d6a4f':'#718096'}">${cn}</span></div><div class="eis">${e.date}${lk?' · '+lk.title.slice(0,18):''}</div></div></div>
+    <div style="display:flex;align-items:center;gap:6px"><div><div class="eiamt ${iI?'eii':''}">${iI?'+':'−'}${fm(e.amount)}</div>${lk?`<div class="lnk">연결됨</div>`:''}</div><button class="bedit" onclick="oM('${iI?'inc':'exp'}',${e.id})">✎</button><button class="bdel" onclick="${iI?'dI':'dE'}(${e.id})">✕</button></div></div>`;
+  }).join(''):`<div style="text-align:center;padding:40px;color:#a0aec0;font-size:13px">기록이 없습니다.</div>`;
+}
+
+function rDash(){
+  const ym=T.getFullYear()+'-'+String(T.getMonth()+1).padStart(2,'0');
+  const te=S.e.reduce((s,e)=>s+e.amount,0);const ti=S.i.reduce((s,e)=>s+e.amount,0);
+  const tme=S.e.filter(e=>e.date.startsWith(ym)).reduce((s,e)=>s+e.amount,0);const tmi=S.i.filter(e=>e.date.startsWith(ym)).reduce((s,e)=>s+e.amount,0);
+  const sc=S.a.filter(a=>a.status==='success').length;const ma=S.a.filter(a=>a.date.startsWith(ym)).length;
+  document.getElementById('stRow').innerHTML=`<div class="stcard"><div class="stl">총 팬활동</div><div class="stv">${S.a.length}<span style="font-size:12px;color:#a0aec0">회</span></div><div class="sts">성공 ${sc}회</div></div><div class="stcard"><div class="stl">이번달 일정</div><div class="stv" style="color:#2563a8">${ma}<span style="font-size:12px">건</span></div><div class="sts">대기 ${S.a.filter(a=>a.status==='waiting').length}건</div></div><div class="stcard"><div class="stl">이번달 지출</div><div class="stv">${Math.round(tme/10000)}<span style="font-size:12px;color:#a0aec0">만원</span></div><div class="sts">수입 +${Math.round(tmi/10000)}만원</div></div><div class="stcard"><div class="stl">순잔액</div><div class="stv" style="color:${ti-te>=0?'#2d6a4f':'#8b1a1a'}">${Math.round(Math.abs(ti-te)/10000)}<span style="font-size:12px;color:#a0aec0">만원</span></div><div class="sts">${ti-te>=0?'흑자':'적자'}</div></div>`;
+  const tod=new Date().toISOString().slice(0,10);
+  const up=[...S.t.map(e=>({...e,tp:'tws'})),...S.a.map(a=>({date:a.date,title:(CA[a.type]||a.type)+': '+a.title,tp:'fan'})),...S.p.map(e=>({...e,tp:'apl'}))].filter(e=>e.date>=tod).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,6);
+  const tl={tws:'투어스 공식',fan:'팬 활동',apl:'응모 일정'};
+  document.getElementById('upL').innerHTML=up.length?up.map(e=>`<div class="upi"><div class="upd">${e.date.slice(5).replace('-','/')}</div><div><div class="upt">${e.title}</div><div class="upg">${tl[e.tp]||''}</div></div></div>`).join(''):`<div style="font-size:12px;color:#a0aec0;padding:10px 0">예정 없음</div>`;
+  const sc2={success:0,waiting:0,fail:0,planned:0};S.a.forEach(a=>sc2[a.status]=(sc2[a.status]||0)+1);
+  const scol={success:'#2d6a4f',waiting:'#7c4f00',fail:'#8b1a1a',planned:'#1a3a6e'};
+  document.getElementById('acSt').innerHTML=Object.entries(sc2).map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #e2e8f0"><div style="display:flex;align-items:center;gap:7px;font-size:12px"><div style="width:8px;height:8px;border-radius:50%;background:${scol[k]}"></div>${SL[k]}</div><div style="font-size:13px;font-weight:700">${v}회</div></div>`).join('');
+  const cats=Object.keys(EX);const tot=S.e.reduce((s,e)=>s+e.amount,0);
+  document.getElementById('exSt').innerHTML=cats.map((cat,i)=>{const sm=S.e.filter(e=>e.cat===cat).reduce((s,e)=>s+e.amount,0);if(!sm)return'';const pct=Math.round(sm/tot*100);return`<div style="margin-bottom:9px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span style="color:#718096">${EX[cat]}</span><span style="font-weight:700">${fm(sm)} <span style="color:#a0aec0;font-weight:400">${pct}%</span></span></div><div style="height:3px;background:#e2e8f0;border-radius:2px"><div style="height:3px;border-radius:2px;width:${pct}%;background:${EC[i]}"></div></div></div>`;}).join('');
+  document.getElementById('hiL').innerHTML=S.a.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5).map(a=>{const fc=S.c.fan;return`<div style="display:flex;gap:8px;padding:7px 0;border-bottom:1px solid #e2e8f0;align-items:center"><div style="font-size:10px;color:#a0aec0;width:42px;flex-shrink:0">${a.date.slice(5).replace('-','/')}</div><div style="flex:1;font-size:12px;font-weight:500">${a.title}</div><div style="font-size:10px;padding:2px 7px;border-radius:4px;background:${fc.bg};color:${fc.tx};font-weight:600">${SL[a.status]||a.status}</div></div>`;}).join('');
+}
+
+function rSet(){
+  const c=S.c;
+  const fl=document.getElementById('filterList');
+  if(fl){
+    if(!S.filters||!S.filters.length){
+      fl.innerHTML=`<div style="font-size:12px;color:#a0aec0;padding:8px 0">필터가 없습니다. 추가해보세요!</div>`;
+    } else {
+      fl.innerHTML=S.filters.map(f=>`
+        <div style="display:flex;align-items:center;justify-content:space-between;background:#f6f9fd;border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:13px;font-weight:700;color:#2563a8;background:#eef4fb;padding:3px 9px;border-radius:5px">[${f.name}]</span>
+            <span style="font-size:11px;color:#718096">${S.a.filter(a=>a.filterId===f.id).length}개 활동에 사용 중</span>
+          </div>
+          <div style="display:flex;gap:5px">
+            <button class="bedit" onclick="oM('filter','${f.id}')">✎</button>
+            <button class="bdel" onclick="dFilter('${f.id}')">✕</button>
+          </div>
+        </div>`).join('');
+    }
+  }
+  document.getElementById('csG').innerHTML=Object.entries(c).map(([k,v])=>`<div><div class="csl">${v.lb}</div><div class="css">배경색</div><div class="csr"><input type="color" class="cscol" id="bg_${k}" value="${v.bg}" oninput="pC('${k}','bg',this.value)"><input class="cshex" id="bgh_${k}" value="${v.bg}" oninput="pC('${k}','bg',this.value)" maxlength="7"></div><div class="css">텍스트색</div><div class="csr"><input type="color" class="cscol" id="tx_${k}" value="${v.tx}" oninput="pC('${k}','tx',this.value)"><input class="cshex" id="txh_${k}" value="${v.tx}" oninput="pC('${k}','tx',this.value)" maxlength="7"></div></div>`).join('');
+  rCP();
+}
+function pC(k,p,v){if(p==='bg'){S.c[k].bg=v;['bg_'+k,'bgh_'+k].forEach(id=>{const e=document.getElementById(id);if(e&&e!==event.target)e.value=v;});}else{S.c[k].tx=v;['tx_'+k,'txh_'+k].forEach(id=>{const e=document.getElementById(id);if(e&&e!==event.target)e.value=v;});}rCP();apC();}
+function rCP(){document.getElementById('csP').innerHTML=Object.entries(S.c).map(([,v])=>`<div class="cschip" style="background:${v.bg};color:${v.tx}">${v.lb}</div>`).join('');}
+function saveCols(){sv();apC();rCal();toast('색상 저장됐습니다 ✓');}
+
+function uSB(){
+  const ym=T.getFullYear()+'-'+String(T.getMonth()+1).padStart(2,'0');
+  const g=id=>{return document.getElementById(id);};
+  const ss=g('sS');if(ss)ss.textContent=S.a.filter(a=>a.status==='success').length;
+  const sw=g('sW');if(sw)sw.textContent=S.a.filter(a=>a.status==='waiting').length;
+  const sp=g('sP');if(sp)sp.textContent=S.a.filter(a=>a.status==='planned').length;
+  const qa=g('qA');if(qa)qa.textContent=S.a.filter(a=>a.date.startsWith(ym)).length+'회';
+  const qe=g('qE');if(qe){const te=S.e.filter(e=>e.date.startsWith(ym)).reduce((s,e)=>s+e.amount,0);const ti=S.i.filter(e=>e.date.startsWith(ym)).reduce((s,e)=>s+e.amount,0);qe.textContent='-'+Math.round(te/10000)+'만 / +'+Math.round(ti/10000)+'만';}
+  const qt=g('qT');if(qt)qt.textContent=S.a.length+'회';
+}
+
+function oM(tp,dt){
+  const FI='width:100%;padding:8px 10px;font-size:12px;border:1px solid #cbd5e0;border-radius:7px;background:#f6f9fd;color:#1a2744;box-sizing:border-box;font-family:inherit;';
+  const FL='font-size:11px;font-weight:600;color:#4a5568;margin-bottom:4px;display:block;';
+  const FG='margin-bottom:11px;';
+  const FR='display:grid;grid-template-columns:1fr 1fr;gap:8px;';
+  const MT='font-size:15px;font-weight:700;color:#1a2744;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;';
+  const MB='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;';
+  const BOK='background:#2563a8;color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:700;width:100%;cursor:pointer;font-family:inherit;';
+  const BOKG='background:#2d6a4f;color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:700;width:100%;cursor:pointer;font-family:inherit;';
+  const BCN='background:#f6f9fd;color:#4a5568;border:1px solid #cbd5e0;padding:10px;border-radius:8px;font-size:13px;cursor:pointer;width:100%;font-family:inherit;';
+  const td=tds(T.getFullYear(),T.getMonth(),T.getDate());
+  let h='';
+  if(tp==='act'){
+    const a=dt!==null?S.a.find(x=>x.id===dt):null;const ie=!!a;
+    const filterOpts=(S.filters||[]).map(f=>`<option value="${f.id}"${a&&a.filterId===f.id?' selected':''}>[${f.name}]</option>`).join('');
+    h=`<div style="${MT}">${ie?'활동 수정':'팬 활동 추가'} <button style="background:none;border:none;font-size:22px;color:#a0aec0;cursor:pointer" onclick="cM2()">×</button></div>
+    <div style="${FG}"><label style="${FL}">활동 유형</label><select style="${FI}" id="mT">${Object.entries(CA).map(([k,v])=>`<option value="${k}"${a&&a.type===k?' selected':''}>${v}</option>`).join('')}</select></div>
+    <div style="${FG}"><label style="${FL}">필터 <span style="font-weight:400;color:#a0aec0">(설정에서 추가 가능)</span></label><select style="${FI}" id="mFi"><option value="">없음</option>${filterOpts}</select></div>
+    <div style="${FG}"><label style="${FL}">제목</label><input style="${FI}" id="mTi" value="${a?es(a.title):''}" placeholder="예: 봄 팬사인회"></div>
+    <div style="${FR}"><div style="${FG}"><label style="${FL}">시작 날짜</label><input type="date" style="${FI}" id="mD" value="${a?a.date:td}"></div><div style="${FG}"><label style="${FL}">종료 날짜(기간)</label><input type="date" style="${FI}" id="mDE" value="${a&&a.dateEnd?a.dateEnd:''}"></div></div>
+    <div style="${FR}"><div style="${FG}"><label style="${FL}">장소</label><input style="${FI}" id="mPl" value="${a?es(a.place||''):''}" placeholder="장소"></div><div style="${FG}"><label style="${FL}">참여 상태</label><select style="${FI}" id="mSt">${Object.entries(SL).map(([k,v])=>`<option value="${k}"${a&&a.status===k?' selected':''}>${v}</option>`).join('')}</select></div></div>
+    <div style="${FG}"><label style="${FL}">메모</label><input style="${FI}" id="mMo" value="${a?es(a.memo||''):''}" placeholder="메모"></div>
+    <div style="${FG}"><label style="${FL}">태그(쉼표 구분)</label><input style="${FI}" id="mTg" value="${a?es(a.tags||''):''}" placeholder="예: 신유, 영재"></div>
+    <div style="${MB}"><button style="${BCN}" onclick="cM2()">취소</button><button style="${BOK}" onclick="sA(${ie?a.id:'null'})">${ie?'수정':'저장'}</button></div>`;
+  } else if(tp==='filter'){
+    const f=dt?S.filters.find(x=>x.id===dt):null;const ie=!!f;
+    h=`<div style="${MT}">${ie?'필터 수정':'필터 추가'} <button style="background:none;border:none;font-size:22px;color:#a0aec0;cursor:pointer" onclick="cM2()">×</button></div>
+    <div style="background:#eef4fb;border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12px;color:#1e3a6e">활동 목록에서 <strong>[필터명]</strong> 형식으로 제목 앞에 표시됩니다.<br>예: <strong>[TWS 3집]</strong> 봄 팬사인회</div>
+    <div style="${FG}"><label style="${FL}">필터 이름</label><input style="${FI}" id="fName" value="${f?es(f.name):''}" placeholder="예: TWS 3집, 영재 직캠, 신유 포카"></div>
+    <div style="${MB}"><button style="${BCN}" onclick="cM2()">취소</button><button style="${BOK}" onclick="sFilter('${f?f.id:'null'}')">${ie?'수정':'저장'}</button></div>`;
+  } else if(tp==='exp'){
+    const e=dt!==null?S.e.find(x=>x.id===dt):null;const ie=!!e;
+    h=`<div style="${MT}">${ie?'지출 수정':'지출 추가'} <button style="background:none;border:none;font-size:22px;color:#a0aec0;cursor:pointer" onclick="cM2()">×</button></div>
+    <div style="${FG}"><label style="${FL}">카테고리</label><select style="${FI}" id="eCa">${Object.entries(EX).map(([k,v])=>`<option value="${k}"${e&&e.cat===k?' selected':''}>${v}</option>`).join('')}</select></div>
+    <div style="${FG}"><label style="${FL}">항목명</label><input style="${FI}" id="eTi" value="${e?es(e.title):''}" placeholder="예: 앨범 5장"></div>
+    <div style="${FR}"><div style="${FG}"><label style="${FL}">금액(원)</label><input type="number" style="${FI}" id="eAm" value="${e?e.amount:''}" placeholder="0" min="0"></div><div style="${FG}"><label style="${FL}">날짜</label><input type="date" style="${FI}" id="eDt" value="${e?e.date:td}"></div></div>
+    <div style="${FG}"><label style="${FL}">연결 팬활동</label><select style="${FI}" id="eLk"><option value="">없음</option>${S.a.map(a=>`<option value="${a.id}"${e&&e.linkedAct===a.id?' selected':''}>${a.title}</option>`).join('')}</select></div>
+    <div style="${MB}"><button style="${BCN}" onclick="cM2()">취소</button><button style="${BOK}" onclick="sE(${ie?e.id:'null'})">${ie?'수정':'저장'}</button></div>`;
+  } else if(tp==='inc'){
+    const e=dt!==null?S.i.find(x=>x.id===dt):null;const ie=!!e;
+    h=`<div style="${MT}">${ie?'수입 수정':'수입 추가'} <button style="background:none;border:none;font-size:22px;color:#a0aec0;cursor:pointer" onclick="cM2()">×</button></div>
+    <div style="${FG}"><label style="${FL}">카테고리</label><select style="${FI}" id="iCa">${Object.entries(IC).map(([k,v])=>`<option value="${k}"${e&&e.cat===k?' selected':''}>${v}</option>`).join('')}</select></div>
+    <div style="${FG}"><label style="${FL}">항목명</label><input style="${FI}" id="iTi" value="${e?es(e.title):''}" placeholder="예: 포카 판매"></div>
+    <div style="${FR}"><div style="${FG}"><label style="${FL}">금액(원)</label><input type="number" style="${FI}" id="iAm" value="${e?e.amount:''}" placeholder="0" min="0"></div><div style="${FG}"><label style="${FL}">날짜</label><input type="date" style="${FI}" id="iDt" value="${e?e.date:td}"></div></div>
+    <div style="${FG}"><label style="${FL}">메모(선택)</label><input style="${FI}" id="iMo" value="${e?es(e.memo||''):''}" placeholder="판매처 등"></div>
+    <div style="${MB}"><button style="${BCN}" onclick="cM2()">취소</button><button style="${BOKG}" onclick="sI(${ie?e.id:'null'})">${ie?'수정':'저장'}</button></div>`;
+  } else if(tp==='ev'){
+    h=`<div style="${MT}">일정 추가 <button style="background:none;border:none;font-size:22px;color:#a0aec0;cursor:pointer" onclick="cM2()">×</button></div>
+    <div style="${FG}"><label style="${FL}">유형</label>
+      <select style="${FI}" id="evTp" onchange="(function(v){
+        document.getElementById('evFanFields').style.display=(v==='fan')?'block':'none';
+        document.getElementById('evSimpleFields').style.display=(v==='fan')?'none':'block';
+        document.getElementById('evLabelWrap').style.display=(v==='apply')?'block':'none';
+      })(this.value)">
+        <option value="tws">투어스 공식 일정</option>
+        <option value="fan">팬 참여 활동</option>
+        <option value="apply">응모 일정</option>
+      </select>
+    </div>
+    <div id="evSimpleFields">
+      <div style="${FG}"><label style="${FL}">필터 <span style="font-weight:400;color:#a0aec0">(설정에서 추가 가능)</span></label><select style="${FI}" id="evSiFi"><option value="">없음</option>${(S.filters||[]).map(f=>`<option value="${f.id}">[${f.name}]</option>`).join('')}</select></div>
+      <div style="${FG}"><label style="${FL}">제목</label><input style="${FI}" id="evTi" placeholder="일정 제목"></div>
+      <div id="evLabelWrap" style="display:none;margin-bottom:11px"><label style="font-size:11px;font-weight:600;color:#4a5568;margin-bottom:4px;display:block">음반사</label><input style="${FI}" id="evLb" placeholder="예: HYBE, SM, 위버스샵"></div>
+      <div style="${FR}"><div style="${FG}"><label style="${FL}">시작 날짜</label><input type="date" style="${FI}" id="evD" value="${dt||td}"></div><div style="${FG}"><label style="${FL}">종료 날짜(기간)</label><input type="date" style="${FI}" id="evDE"></div></div>
+      <div style="${FG}"><label style="${FL}">장소(선택)</label><input style="${FI}" id="evPl" placeholder="장소"></div>
+    </div>
+    <div id="evFanFields" style="display:none">
+      <div style="${FG}"><label style="${FL}">활동 유형</label><select style="${FI}" id="evFanType">${Object.entries(CA).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div>
+      <div style="${FG}"><label style="${FL}">필터 <span style="font-weight:400;color:#a0aec0">(설정에서 추가 가능)</span></label><select style="${FI}" id="evFanFi"><option value="">없음</option>${(S.filters||[]).map(f=>`<option value="${f.id}">[${f.name}]</option>`).join('')}</select></div>
+      <div style="${FG}"><label style="${FL}">제목</label><input style="${FI}" id="evFanTi" placeholder="예: 봄 팬사인회"></div>
+      <div style="${FR}"><div style="${FG}"><label style="${FL}">시작 날짜</label><input type="date" style="${FI}" id="evFanD" value="${dt||td}"></div><div style="${FG}"><label style="${FL}">종료 날짜(기간)</label><input type="date" style="${FI}" id="evFanDE"></div></div>
+      <div style="${FR}"><div style="${FG}"><label style="${FL}">장소</label><input style="${FI}" id="evFanPl" placeholder="장소"></div><div style="${FG}"><label style="${FL}">참여 상태</label><select style="${FI}" id="evFanSt">${Object.entries(SL).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div></div>
+      <div style="${FG}"><label style="${FL}">메모</label><input style="${FI}" id="evFanMo" placeholder="메모, 준비물 등"></div>
+      <div style="${FG}"><label style="${FL}">태그(쉼표 구분)</label><input style="${FI}" id="evFanTg" placeholder="예: 신유, 영재"></div>
+    </div>
+    <div style="${MB}"><button style="${BCN}" onclick="cM2()">취소</button><button style="${BOK}" onclick="sEv()">저장</button></div>`;
+  }
+  sM(h);
+}
+
+function sM(h){
+  const o=document.getElementById('mov');const b=document.getElementById('mbox');
+  if(o&&b){b.innerHTML=h;o.style.display='flex';document.body.style.overflow='hidden';}
+}
+function cM2(){const o=document.getElementById('mov');if(o)o.style.display='none';document.body.style.overflow='';}
+function cMOut(e){if(e.target===document.getElementById('mov'))cM2();}
+
+function sA(id){
+  const tp=document.getElementById('mT').value;const ti=document.getElementById('mTi').value.trim();const d=document.getElementById('mD').value;
+  const de=document.getElementById('mDE').value;const pl=document.getElementById('mPl').value.trim();const st=document.getElementById('mSt').value;
+  const mo=document.getElementById('mMo').value.trim();const tg=document.getElementById('mTg').value.trim();
+  const fiEl=document.getElementById('mFi');const filterId=fiEl?fiEl.value||'':'';
+  if(!ti||!d){toast('제목과 날짜를 입력하세요');return;}
+  if(id==='null'||id===null)S.a.unshift({id:ni(S.a),type:tp,title:ti,date:d,dateEnd:de,place:pl,status:st,memo:mo,tags:tg,filterId,linkedExp:[]});
+  else{const a=S.a.find(x=>x.id===id);if(a)Object.assign(a,{type:tp,title:ti,date:d,dateEnd:de,place:pl,status:st,memo:mo,tags:tg,filterId});}
+  cM2();sv();rAll();toast('저장됐습니다 ✓');
+}
+
+function sFilter(id){
+  const name=document.getElementById('fName').value.trim();
+  if(!name){toast('필터 이름을 입력하세요');return;}
+  if(!S.filters)S.filters=[];
+  if(id==='null'||id===null){
+    S.filters.push({id:'f'+Date.now(),name});
+  } else {
+    const f=S.filters.find(x=>x.id===id);if(f)f.name=name;
+  }
+  cM2();sv();rSet();toast('필터 저장됐습니다 ✓');
+}
+
+function dFilter(id){
+  if(!confirm('필터를 삭제하시겠습니까?\n해당 필터가 설정된 활동에서도 제거됩니다.'))return;
+  S.filters=S.filters.filter(f=>f.id!==id);
+  S.a.forEach(a=>{if(a.filterId===id)a.filterId='';});
+  sv();rSet();rActs();toast('삭제됐습니다');
+}
+function sE(id){
+  const cat=document.getElementById('eCa').value;const ti=document.getElementById('eTi').value.trim();
+  const am=parseInt(document.getElementById('eAm').value)||0;const d=document.getElementById('eDt').value;
+  const lk=parseInt(document.getElementById('eLk').value)||0;
+  if(!ti||!d){toast('항목명과 날짜를 입력하세요');return;}
+  if(id==='null'||id===null){const ne={id:ni(S.e),cat,title:ti,amount:am,date:d,linkedAct:lk};S.e.unshift(ne);if(lk){const a=S.a.find(x=>x.id===lk);if(a&&!a.linkedExp.includes(ne.id))a.linkedExp.push(ne.id);}}
+  else{const e=S.e.find(x=>x.id===id);if(e)Object.assign(e,{cat,title:ti,amount:am,date:d,linkedAct:lk});}
+  cM2();sv();rAll();toast('저장됐습니다 ✓');
+}
+function sI(id){
+  const cat=document.getElementById('iCa').value;const ti=document.getElementById('iTi').value.trim();
+  const am=parseInt(document.getElementById('iAm').value)||0;const d=document.getElementById('iDt').value;const mo=document.getElementById('iMo').value.trim();
+  if(!ti||!d){toast('항목명과 날짜를 입력하세요');return;}
+  if(id==='null'||id===null)S.i.unshift({id:ni(S.i),cat,title:ti,amount:am,date:d,memo:mo});
+  else{const e=S.i.find(x=>x.id===id);if(e)Object.assign(e,{cat,title:ti,amount:am,date:d,memo:mo});}
+  cM2();sv();rAll();toast('저장됐습니다 ✓');
+}
+function sEv(){
+  const tp=document.getElementById('evTp').value;
+  if(!tp){toast('유형을 선택하세요');return;}
+  if(tp==='fan'){
+    const fanType=document.getElementById('evFanType').value;
+    const ti=(document.getElementById('evFanTi')||{}).value||'';
+    const d=(document.getElementById('evFanD')||{}).value||'';
+    const de=(document.getElementById('evFanDE')||{}).value||'';
+    const pl=(document.getElementById('evFanPl')||{}).value||'';
+    const st=(document.getElementById('evFanSt')||{}).value||'planned';
+    const mo=(document.getElementById('evFanMo')||{}).value||'';
+    const tg=(document.getElementById('evFanTg')||{}).value||'';
+    const filterId=(document.getElementById('evFanFi')||{}).value||'';
+    if(!ti.trim()||!d){toast('제목과 날짜를 입력하세요');return;}
+    S.a.unshift({id:ni(S.a),type:fanType,title:ti.trim(),date:d,dateEnd:de,place:pl.trim(),status:st,memo:mo.trim(),tags:tg.trim(),filterId,linkedExp:[]});
+  } else {
+    const ti=(document.getElementById('evTi')||{}).value||'';
+    const d=(document.getElementById('evD')||{}).value||'';
+    const de=(document.getElementById('evDE')||{}).value||'';
+    const pl=(document.getElementById('evPl')||{}).value||'';
+    const filterId=(document.getElementById('evSiFi')||{}).value||'';
+    const label=(document.getElementById('evLb')||{}).value||'';
+    if(!ti.trim()||!d){toast('제목과 날짜를 입력하세요');return;}
+    if(tp==='tws')S.t.push({id:ui(),date:d,dateEnd:de,title:ti.trim(),filterId});
+    else if(tp==='apply')S.p.push({id:ui(),date:d,dateEnd:de,title:ti.trim(),filterId,label});
+  }
+  cM2();sv();rAll();toast('저장됐습니다 ✓');
+}
+function dA(id){if(!confirm('삭제하시겠습니까?'))return;S.a=S.a.filter(a=>a.id!==id);sv();rAll();toast('삭제됐습니다');}
+function dE(id){if(!confirm('삭제하시겠습니까?'))return;S.e=S.e.filter(e=>e.id!==id);sv();rAll();toast('삭제됐습니다');}
+function dI(id){if(!confirm('삭제하시겠습니까?'))return;S.i=S.i.filter(e=>e.id!==id);sv();rAll();toast('삭제됐습니다');}
+function dTws(id){if(!confirm('삭제하시겠습니까?'))return;S.t=S.t.filter(e=>e.id!==id);sv();rAll();toast('삭제됐습니다');}
+function dApl(id){if(!confirm('삭제하시겠습니까?'))return;S.p=S.p.filter(e=>e.id!==id);sv();rAll();toast('삭제됐습니다');}
+
+function oMTws(id){
+  const e=S.t.find(x=>x.id===id);
+  const FI='width:100%;padding:8px 10px;font-size:12px;border:1px solid #cbd5e0;border-radius:7px;background:#f6f9fd;color:#1a2744;box-sizing:border-box;font-family:inherit;';
+  const FL='font-size:11px;font-weight:600;color:#4a5568;margin-bottom:4px;display:block;';
+  const FG='margin-bottom:11px;';
+  const FR='display:grid;grid-template-columns:1fr 1fr;gap:8px;';
+  const MT='font-size:15px;font-weight:700;color:#1a2744;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;';
+  const MB='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;';
+  const BOK='background:#2563a8;color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:700;width:100%;cursor:pointer;font-family:inherit;';
+  const BCN='background:#f6f9fd;color:#4a5568;border:1px solid #cbd5e0;padding:10px;border-radius:8px;font-size:13px;cursor:pointer;width:100%;font-family:inherit;';
+  const td=tds(T.getFullYear(),T.getMonth(),T.getDate());
+  const filterOpts=(S.filters||[]).map(f=>`<option value="${f.id}"${e&&e.filterId===f.id?' selected':''}>[${f.name}]</option>`).join('');
+  const h=`<div style="${MT}">투어스 일정 수정 <button style="background:none;border:none;font-size:22px;color:#a0aec0;cursor:pointer" onclick="cM2()">×</button></div>
+  <div style="${FG}"><label style="${FL}">필터 <span style="font-weight:400;color:#a0aec0">(설정에서 추가 가능)</span></label><select style="${FI}" id="twsFi"><option value="">없음</option>${filterOpts}</select></div>
+  <div style="${FG}"><label style="${FL}">제목</label><input style="${FI}" id="twsTi" value="${e?es(e.title):''}" placeholder="일정 제목"></div>
+  <div style="${FR}"><div style="${FG}"><label style="${FL}">시작 날짜</label><input type="date" style="${FI}" id="twsD" value="${e?e.date:td}"></div><div style="${FG}"><label style="${FL}">종료 날짜(기간)</label><input type="date" style="${FI}" id="twsDE" value="${e&&e.dateEnd?e.dateEnd:''}"></div></div>
+  <div style="${MB}"><button style="${BCN}" onclick="cM2()">취소</button><button style="${BOK}" onclick="savTws('${id}')">수정 저장</button></div>`;
+  sM(h);
+}
+
+function savTws(id){
+  const ti=document.getElementById('twsTi').value.trim();
+  const d=document.getElementById('twsD').value;
+  const de=document.getElementById('twsDE').value||'';
+  const filterId=(document.getElementById('twsFi')||{}).value||'';
+  if(!ti||!d){toast('제목과 날짜를 입력하세요');return;}
+  const e=S.t.find(x=>x.id===id);
+  if(e)Object.assign(e,{title:ti,date:d,dateEnd:de,filterId});
+  cM2();sv();rAll();toast('저장됐습니다 ✓');
+}
+
+function oMApl(id){
+  const e=S.p.find(x=>x.id===id);
+  const FI='width:100%;padding:8px 10px;font-size:12px;border:1px solid #cbd5e0;border-radius:7px;background:#f6f9fd;color:#1a2744;box-sizing:border-box;font-family:inherit;';
+  const FL='font-size:11px;font-weight:600;color:#4a5568;margin-bottom:4px;display:block;';
+  const FG='margin-bottom:11px;';
+  const FR='display:grid;grid-template-columns:1fr 1fr;gap:8px;';
+  const MT='font-size:15px;font-weight:700;color:#1a2744;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;';
+  const MB='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;';
+  const BOK='background:#2563a8;color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:700;width:100%;cursor:pointer;font-family:inherit;';
+  const BCN='background:#f6f9fd;color:#4a5568;border:1px solid #cbd5e0;padding:10px;border-radius:8px;font-size:13px;cursor:pointer;width:100%;font-family:inherit;';
+  const td=tds(T.getFullYear(),T.getMonth(),T.getDate());
+  const filterOpts=(S.filters||[]).map(f=>`<option value="${f.id}"${e&&e.filterId===f.id?' selected':''}>[${f.name}]</option>`).join('');
+  const h=`<div style="${MT}">응모 일정 수정 <button style="background:none;border:none;font-size:22px;color:#a0aec0;cursor:pointer" onclick="cM2()">×</button></div>
+  <div style="${FG}"><label style="${FL}">필터 <span style="font-weight:400;color:#a0aec0">(설정에서 추가 가능)</span></label><select style="${FI}" id="aplFi"><option value="">없음</option>${filterOpts}</select></div>
+  <div style="${FG}"><label style="${FL}">제목</label><input style="${FI}" id="aplTi" value="${e?es(e.title):''}" placeholder="일정 제목"></div>
+  <div style="${FG}"><label style="${FL}">음반사</label><input style="${FI}" id="aplLb" value="${e?es(e.label||''):''}" placeholder="예: HYBE, SM, 위버스샵"></div>
+  <div style="${FR}"><div style="${FG}"><label style="${FL}">시작 날짜</label><input type="date" style="${FI}" id="aplD" value="${e?e.date:td}"></div><div style="${FG}"><label style="${FL}">종료 날짜(기간)</label><input type="date" style="${FI}" id="aplDE" value="${e&&e.dateEnd?e.dateEnd:''}"></div></div>
+  <div style="${MB}"><button style="${BCN}" onclick="cM2()">취소</button><button style="${BOK}" onclick="savApl('${id}')">수정 저장</button></div>`;
+  sM(h);
+}
+
+function savApl(id){
+  const ti=document.getElementById('aplTi').value.trim();
+  const d=document.getElementById('aplD').value;
+  const de=document.getElementById('aplDE').value||'';
+  const filterId=(document.getElementById('aplFi')||{}).value||'';
+  const label=(document.getElementById('aplLb')||{}).value||'';
+  if(!ti||!d){toast('제목과 날짜를 입력하세요');return;}
+  const e=S.p.find(x=>x.id===id);
+  if(e)Object.assign(e,{title:ti,date:d,dateEnd:de,filterId,label});
+  cM2();sv();rAll();toast('저장됐습니다 ✓');
+}
+
+function exD(){const j=JSON.stringify(S,null,2);const b=new Blob([j],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='42log_backup.json';a.click();URL.revokeObjectURL(u);toast('내보내기 완료!');}
+function imD(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{S=JSON.parse(e.target.result);sv();rAll();toast('가져오기 완료!');}catch(err){toast('파일 오류');}};r.readAsText(f);ev.target.value='';}
+function clAll(){if(!confirm('전체 초기화하시겠습니까?'))return;df();sv();rAll();toast('초기화 완료');}
+
+function rAll(){rCal();rActs();rExps();uSB();}
+
+ld();
+document.querySelectorAll('.pane').forEach(p=>p.style.display='none');
+document.getElementById('p-cal').style.display='block';
+rAll();
+</script>
+</body>
+</html>
